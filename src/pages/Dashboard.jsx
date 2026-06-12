@@ -4,6 +4,10 @@ import { api } from '../api/client'
 export default function Dashboard() {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [pwMessage, setPwMessage] = useState(null)
+  const [pwError, setPwError] = useState(null)
+  const [changing, setChanging] = useState(false)
 
   useEffect(() => {
     api.getDashboardStats()
@@ -11,6 +15,28 @@ export default function Dashboard() {
       .catch(() => setStats(null))
       .finally(() => setLoading(false))
   }, [])
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault()
+    setPwMessage(null)
+    setPwError(null)
+
+    if (pwForm.newPassword !== pwForm.confirmPassword) {
+      setPwError('New passwords do not match.')
+      return
+    }
+
+    setChanging(true)
+    try {
+      await api.changePassword(pwForm.currentPassword, pwForm.newPassword)
+      setPwMessage('Password changed successfully.')
+      setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+    } catch (err) {
+      setPwError(err.message)
+    } finally {
+      setChanging(false)
+    }
+  }
 
   if (loading) return <div className="loading">Loading dashboard...</div>
 
@@ -48,6 +74,41 @@ export default function Dashboard() {
           <a href="/sync" className="btn btn-outline">Check Sync Status</a>
           <a href="/reports" className="btn btn-outline">View Reports</a>
         </div>
+      </div>
+
+      <div className="card password-section">
+        <div className="card-title">Change Password</div>
+        {pwMessage && <div className="alert alert-success">{pwMessage}</div>}
+        {pwError && <div className="alert alert-error">{pwError}</div>}
+        <form onSubmit={handlePasswordChange}>
+          <div className="form-group">
+            <label>Current Password</label>
+            <input
+              type="password" className="form-control" placeholder="Enter your current password" required
+              value={pwForm.currentPassword}
+              onChange={(e) => setPwForm({ ...pwForm, currentPassword: e.target.value })}
+            />
+          </div>
+          <div className="form-group">
+            <label>New Password</label>
+            <input
+              type="password" className="form-control" placeholder="At least 6 characters" required minLength={6}
+              value={pwForm.newPassword}
+              onChange={(e) => setPwForm({ ...pwForm, newPassword: e.target.value })}
+            />
+          </div>
+          <div className="form-group">
+            <label>Confirm New Password</label>
+            <input
+              type="password" className="form-control" placeholder="Repeat your new password" required minLength={6}
+              value={pwForm.confirmPassword}
+              onChange={(e) => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
+            />
+          </div>
+          <button type="submit" className="btn btn-primary" disabled={changing}>
+            {changing ? 'Updating...' : 'Update Password'}
+          </button>
+        </form>
       </div>
     </div>
   )

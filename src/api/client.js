@@ -70,4 +70,10 @@ export const api = {
     request('/wp-json/hkd-events/v1/sync/trigger', { method: 'POST' }),
 
   getSyncStatus: () => request('/wp-json/hkd-events/v1/sync/status'),
+
+  changePassword: (currentPassword, newPassword) =>
+    request('/wp-json/hkd-events/v1/admin/me/password', {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword, newPassword }),
+    }),
 };
