@@ -474,6 +474,37 @@ table tr:hover {
   color: #bbb;
 }
 
+.password-input {
+  position: relative;
+}
+
+.password-input .form-control {
+  padding-right: 40px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #999;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.password-toggle:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.05);
+}
+
 .alert {
   padding: 12px 16px;
   border-radius: 6px;

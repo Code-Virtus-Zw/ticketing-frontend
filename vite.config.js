@@ -1,19 +1,19 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
     proxy: {
-      '/wp-json': {
-        target: 'http://localhost:8080',
+      "/wp-json": {
+        target: "http://192.168.1.3:8080",
         changeOrigin: true,
       },
-      '/api': {
-        target: 'http://localhost:8080',
+      "/api": {
+        target: "http://192.168.1.3:8080",
         changeOrigin: true,
       },
     },
   },
-})
+});
